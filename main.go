@@ -128,117 +128,117 @@ func main() {
 	fmt.Println(databases)
 
 	// Connect to the collection
-	// collection := client.Database(DB_NAME).Collection(RECIPE_COLLECTION)
+	collection := client.Database(DB_NAME).Collection(RECIPE_COLLECTION)
 
-	// app := iris.Default()
-	// port := retrievePort(os.Args)
+	app := iris.Default()
+	port := retrievePort(os.Args)
 
-	// // Load all templates from the "./views" folder
-	// app.RegisterView(iris.HTML("./views", ".html"))
+	// Load all templates from the "./views" folder
+	app.RegisterView(iris.HTML("./views", ".html"))
 
-	// // Error codes
-	// app.OnErrorCode(iris.StatusNotFound, notFound)
-	// app.OnErrorCode(iris.StatusInternalServerError, internalServerError)
+	// Error codes
+	app.OnErrorCode(iris.StatusNotFound, notFound)
+	app.OnErrorCode(iris.StatusInternalServerError, internalServerError)
 
-	// // API Endpoints
-	// app.Get("/", home)
-	// app.Get("/recipe/{id:uint64}", getRecipe)
-	// app.Post("/deleterecipe/{id:uint64}", deleteRecipe)
-	// app.Post("/editrecipe/{id:uint64}", editRecipe)
-	// app.Post("/addrecipe", addRecipe)
+	// API Endpoints
+	app.Get("/", home)
+	app.Get("/recipe/{id:uint64}", getRecipe)
+	app.Post("/deleterecipe/{id:uint64}", deleteRecipe)
+	app.Post("/editrecipe/{id:uint64}", editRecipe)
+	app.Post("/addrecipe", addRecipe)
 
-	// // Listens and serves incoming http requests
-	// app.Listen(":" + port)
+	// Listens and serves incoming http requests
+	app.Listen(":" + port)
 }
 
-// // Endpoint to read all recipies within our database
-// func home(ctx iris.Context) {
-// 	ctx.ViewData("data", RECIPE_DB)
+// Endpoint to read all recipies within our database
+func home(ctx iris.Context) {
+	ctx.ViewData("data", RECIPE_DB)
 
-// 	ctx.View("index.html")
-// }
+	ctx.View("index.html")
+}
 
-// // Endpoint to read a recipe data - READ
-// func getRecipe(ctx iris.Context) {
-// 	recipeID, _ := ctx.Params().GetUint64("id")
+// Endpoint to read a recipe data - READ
+func getRecipe(ctx iris.Context) {
+	recipeID, _ := ctx.Params().GetUint64("id")
 
-// 	recipeIdx := findRecipeIdx(recipeID)
+	recipeIdx := findRecipeIdx(recipeID)
 
-// 	recipeArr := []Recipe{RECIPE_DB[recipeIdx]}
+	recipeArr := []Recipe{RECIPE_DB[recipeIdx]}
 
-// 	ctx.ViewData("data", recipeArr)
+	ctx.ViewData("data", recipeArr)
 
-// 	ctx.View("recipe.html")
-// }
+	ctx.View("recipe.html")
+}
 
-// // Endpoint to delete a recipe - DELETE
-// func deleteRecipe(ctx iris.Context) {
-// 	recipeID, _ := ctx.Params().GetUint64("id")
+// Endpoint to delete a recipe - DELETE
+func deleteRecipe(ctx iris.Context) {
+	recipeID, _ := ctx.Params().GetUint64("id")
 
-// 	indexToRemove := findRecipeIdx(recipeID)
+	indexToRemove := findRecipeIdx(recipeID)
 
-// 	// Assigning last element to current element
-// 	N := len(RECIPE_DB)
-// 	RECIPE_DB[indexToRemove] = RECIPE_DB[N-1]
+	// Assigning last element to current element
+	N := len(RECIPE_DB)
+	RECIPE_DB[indexToRemove] = RECIPE_DB[N-1]
 
-// 	RECIPE_DB = RECIPE_DB[:N-1]
+	RECIPE_DB = RECIPE_DB[:N-1]
 
-// 	// Redirect to the / route
-// 	ctx.Redirect("/")
-// }
+	// Redirect to the / route
+	ctx.Redirect("/")
+}
 
-// // Endpoint to add a new recipe - CREATE
-// func addRecipe(ctx iris.Context) {
-// 	// Extract data from the form
-// 	name := ctx.FormValue("name")
-// 	ingredients := ctx.FormValue("ingredients")
-// 	directions := ctx.FormValue("directions")
-// 	rating, _ := strconv.Atoi(ctx.FormValue("rating"))
+// Endpoint to add a new recipe - CREATE
+func addRecipe(ctx iris.Context) {
+	// Extract data from the form
+	name := ctx.FormValue("name")
+	ingredients := ctx.FormValue("ingredients")
+	directions := ctx.FormValue("directions")
+	rating, _ := strconv.Atoi(ctx.FormValue("rating"))
 
-// 	// Get new ID
-// 	newID := retrieveID()
+	// Get new ID
+	newID := retrieveID()
 
-// 	// Current time retrieval
-// 	currentTime := time.Now()
+	// Current time retrieval
+	currentTime := time.Now()
 
-// 	// Creating a new Recipe
-// 	newRecipe := Recipe{RecipeID: newID, Name: name, Ingredients: ingredients, Directions: directions, Rating: rating, CreatedAt: currentTime}
+	// Creating a new Recipe
+	newRecipe := Recipe{RecipeID: newID, Name: name, Ingredients: ingredients, Directions: directions, Rating: rating, CreatedAt: currentTime}
 
-// 	RECIPE_DB = append(RECIPE_DB, newRecipe)
+	RECIPE_DB = append(RECIPE_DB, newRecipe)
 
-// 	// Redirect to the / route
-// 	ctx.Redirect("/")
-// }
+	// Redirect to the / route
+	ctx.Redirect("/")
+}
 
-// // Endpoint to edit a given receipe - UPDATE
-// func editRecipe(ctx iris.Context) {
-// 	// Extract request data
-// 	recipeID, _ := ctx.Params().GetUint64("id")
+// Endpoint to edit a given receipe - UPDATE
+func editRecipe(ctx iris.Context) {
+	// Extract request data
+	recipeID, _ := ctx.Params().GetUint64("id")
 
-// 	name := ctx.FormValue("name")
-// 	ingredients := ctx.FormValue("ingredients")
-// 	directions := ctx.FormValue("directions")
-// 	rating, _ := strconv.Atoi(ctx.FormValue("rating"))
+	name := ctx.FormValue("name")
+	ingredients := ctx.FormValue("ingredients")
+	directions := ctx.FormValue("directions")
+	rating, _ := strconv.Atoi(ctx.FormValue("rating"))
 
-// 	// Current time retrieval
-// 	currentTime := time.Now()
+	// Current time retrieval
+	currentTime := time.Now()
 
-// 	recipeIdx := findRecipeIdx(recipeID)
+	recipeIdx := findRecipeIdx(recipeID)
 
-// 	editedRecipe := Recipe{Name: name, Ingredients: ingredients, Directions: directions, Rating: rating, CreatedAt: currentTime}
+	editedRecipe := Recipe{Name: name, Ingredients: ingredients, Directions: directions, Rating: rating, CreatedAt: currentTime}
 
-// 	RECIPE_DB[recipeIdx] = editedRecipe
+	RECIPE_DB[recipeIdx] = editedRecipe
 
-// 	// Redirect to the / route
-// 	ctx.Redirect("/")
-// }
+	// Redirect to the / route
+	ctx.Redirect("/")
+}
 
-// // NOT FOUND ERRORS
-// func notFound(ctx iris.Context) {
-// 	ctx.WriteString("URL not found, 404")
-// }
+// NOT FOUND ERRORS
+func notFound(ctx iris.Context) {
+	ctx.WriteString("URL not found, 404")
+}
 
-// // SERVER ERRORS
-// func internalServerError(ctx iris.Context) {
-// 	ctx.WriteString("Something went wrong, try again")
-// }
+// SERVER ERRORS
+func internalServerError(ctx iris.Context) {
+	ctx.WriteString("Something went wrong, try again")
+}
