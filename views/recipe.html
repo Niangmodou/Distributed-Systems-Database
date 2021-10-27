@@ -1,0 +1,18 @@
+<html>
+    <head>
+        <title>{{.Name}}</title>
+    </head>
+
+    <body>
+        {{range .data}}
+            <h1>{{.Name}}</h1>
+            <h4>Ingredients</h3>
+            <p id="ingredients{{.RecipeID}}" >{{.Ingredients}}</p>
+            <h4>Directions</h3>
+            <p id="directions{{.RecipeID}}" >{{.Directions}}</p>
+            Difficulty: <p id="rating{{.RecipeID}}">{{.Rating}}</p>
+
+            <a href="/">Go Back</a>
+        {{end}}
+    </body>
+</html>

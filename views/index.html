@@ -1,0 +1,144 @@
+<html>
+    <head>
+        <title>Recipe Book</title>
+
+        <style>
+            .center {
+                border-radius: 25px;
+                margin: auto;
+                width: 50%;
+                padding: 10px;
+            }
+
+        </style>
+    </head>
+
+    <body>
+        <div id="app">
+
+            <h1>Welcome to your Recipe Book</h1>
+
+            <!-- Create a new recipe -->
+            <div id="createRecipe">
+                <h2>Create a new recipe </h2>
+                <form action="/addrecipe" method="post">
+                    Name:<input type="text" name="name"> <br>
+                    Ingredients:<input type="text" name="ingredients"> <br>
+                    Directions:<input type="text" name="directions"> <br>
+                    Difficulty Rating(1-5):<input type="text" name="rating"> <br>
+
+                    <input type="submit" value="Add Recipe">
+
+                </form>
+            </div>
+
+            <!-- Display current recipes -->
+            <div id="recipies">
+                <h2>Recipes </h2>
+
+                {{range .data}}
+
+                    <div id="recipe{{.RecipeID}}">
+                        <h3 id="name{{.RecipeID}}" >{{.Name}}</h3>
+                        <h4>Ingredients</h3>
+                        <p id="ingredients{{.RecipeID}}" >{{.Ingredients}}</p>
+                        <h4>Directions</h3>
+                        <p id="directions{{.RecipeID}}" >{{.Directions}}</p>
+                        Difficulty: <p id="rating{{.RecipeID}}">{{.Rating}}</p>
+                        
+                        <!-- Edit receipe button-->
+                        <button id="editBtn" onclick="(function() {
+                            // Retrieving the labels 
+                            var nameLabel = document.getElementById('name{{.RecipeID}}')
+                            var ingredientLabel = document.getElementById('ingredients{{.RecipeID}}')
+                            var directionLabel = document.getElementById('directions{{.RecipeID}}')
+                            var ratingLabel = document.getElementById('rating{{.RecipeID}}')
+
+                            // Making labels editable
+                            nameLabel.setAttribute('contenteditable' , true)
+                            ingredientLabel.setAttribute('contenteditable' , true)
+                            directionLabel.setAttribute('contenteditable' , true)
+                            ratingLabel.setAttribute('contenteditable' , true)
+
+                            // Retrieve the texts of these labels
+                            var newNameText = document.getElementById('name{{.RecipeID}}').textContent
+                            var newIngredientText = document.getElementById('ingredients{{.RecipeID}}').textContent
+                            var newDirectionLabel = document.getElementById('directions{{.RecipeID}}').textContent
+                            var newRatingLabel = document.getElementById('rating{{.RecipeID}}').textContent
+
+                            // Create submit button 
+                            var submitBtn = document.createElement('button')
+                            var text = document.createTextNode('Submit')
+                            submitBtn.setAttribute('id', 'editSubmit')
+                            submitBtn.appendChild(text)
+
+                            var appBody = document.getElementById('recipe{{.RecipeID}}')
+                            appBody.appendChild(submitBtn)
+
+                            submitBtn.onclick = function() {
+                                // Retreiving the new text content
+                                newNameText = document.getElementById('name{{.RecipeID}}').textContent
+                                newIngredientText = document.getElementById('ingredients{{.RecipeID}}').textContent
+                                newDirectionText = document.getElementById('directions{{.RecipeID}}').textContent
+                                newRatingText = document.getElementById('rating{{.RecipeID}}').textContent
+
+                                // Making POST call to backend
+                                const data = {
+                                    name: newNameText,
+                                    ingredients: newIngredientText,
+                                    directions: newDirectionText,
+                                    rating: newRatingText
+                                }
+                                post('/editrecipe/{{.RecipeID}}', data)
+
+                                // Making labels uneditable
+                                nameLabel.setAttribute('contenteditable' , false)
+                                ingredientLabel.setAttribute('contenteditable' , false)
+                                directionLabel.setAttribute('contenteditable' , false)
+                                ratingLabel.setAttribute('contenteditable' , false)
+
+                                // Remove the submit button
+                                document.getElementById('editSubmit').remove()
+                            }
+
+
+                        })();">Edit</button>
+                    </div>
+
+                    <!-- Delete receipe button-->
+                    <form action="/deleterecipe/{{.RecipeID}}" method="post">
+                        <input type="submit" value="Delete">
+                    </form>
+
+                    <br>
+
+                    <a href="/recipe/{{.RecipeID}}">View</a>
+
+                {{end}}
+            </div>
+        </div>
+    
+         <script>
+             // Function to make a post call to the /editrecipe route
+            function post(path, data, method = "post") {
+                // Create a fom tag
+                const form = document.createElement('form');
+                form.method = method;
+                form.action = path;
+
+                for (const key in data) {
+                    if (data.hasOwnProperty(key)) { 
+                        const input = document.createElement('input');
+                        input.name = key;
+                        input.value = data[key];
+
+                        form.appendChild(input)
+                    }
+                }
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+        </script> 
+    </body>
+</html>
