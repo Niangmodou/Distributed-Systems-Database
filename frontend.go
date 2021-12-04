@@ -1,6 +1,5 @@
 /*
-Parallel and Distributed Systems
-Project Part 4 Recipe Application
+Distributed Recipe App
 frontend.go
 MADE WITH LOVE BY MODOU NAING
 */
