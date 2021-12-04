@@ -38,5 +38,3 @@ should continue working normally during this process.
 
 I used the Paxos replication strategy for my application. I would have chosen raft, but I thought the leader selection process would have been much more difficult to implement and Paxos seemed pretty straightforward once it was understood. Each one of my backends has a log of messages that is appeneded to once the Paxos algorithm has been ran. The backends then use this Log to synchronize with one another. In order to prevent blocking while receiving messages, I run the receiving messages code on a seperate thread from the main thread. I also use a message to execute messages on a sepeerate thread, and the logs are synced with the other backends on a seperate thread.
 Throughout the assignment, I have mainly used this website to https://people.cs.rutgers.edu/~pxk/417/notes/paxos.html help me better understand the Paxos implementation. 
-
-I thought this assignment was probably the most difficult assignment we have had to do in this class, but I learned a lot from it. and I really enjoyed the assignment. I really appreciate assignments that are  applicable to the real world.
